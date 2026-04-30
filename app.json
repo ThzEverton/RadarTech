@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Radar de Vagas Tech",
+    "slug": "radar-vagas-tech",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "android": {
+      "package": "com.radarvagas.tech",
+      "backgroundColor": "#1D9E75"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.radarvagas.tech"
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-font"
+    ]
+  }
+}
