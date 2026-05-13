@@ -1,5 +1,3 @@
-// src/screens/HomeScreen.js
-
 import React, { useState, useCallback } from 'react';
 import {
   View,
@@ -14,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import VagaCard from '../components/VagaCard';
-import { buscarVagasRecomendadas } from '../services/remotiveApi';
+import { buscarVagasRecomendadas } from '../services/vagasApi';
 import { carregarPerfil, carregarFavoritos, salvarFavorito, removerFavorito } from '../services/storage';
 import { notificarVagaMatch } from '../services/notificacoes';
 import { calcularMatch } from '../hooks/useMatch';
@@ -36,6 +34,7 @@ export default function HomeScreen({ navigation }) {
   async function carregarDados() {
     setCarregando(true);
     setErro(null);
+
     try {
       const [perfilSalvo, favsSalvos] = await Promise.all([
         carregarPerfil(),
@@ -46,28 +45,23 @@ export default function HomeScreen({ navigation }) {
       setFavoritos(favsSalvos.map((f) => f.id));
 
       if (!perfilSalvo) {
-        navigation.reset({ index: 0, routes: [{ name: 'Cadastro' }] });
+        navigation.reset({ index: 0, routes: [{ name: 'CadastroPerfil' }] });
         return;
       }
 
       const vagasApi = await buscarVagasRecomendadas(perfilSalvo);
-
-      // Calcula match e ordena
       const vagasComMatch = vagasApi
         .map((v) => ({ ...v, matchPct: calcularMatch(v, perfilSalvo) }))
         .sort((a, b) => b.matchPct - a.matchPct);
 
       setVagas(vagasComMatch);
 
-      // Notifica vagas com match alto que ainda não foram notificadas
-      for (const vaga of vagasComMatch) {
-        if (vaga.matchPct >= 80) {
-          await notificarVagaMatch(vaga, vaga.matchPct);
-          break; // notifica só a melhor
-        }
+      const melhorVaga = vagasComMatch.find((vaga) => vaga.matchPct >= 80);
+      if (melhorVaga) {
+        await notificarVagaMatch(melhorVaga, melhorVaga.matchPct);
       }
     } catch (e) {
-      setErro('Não foi possível carregar as vagas. Verifique sua conexão.');
+      setErro('Nao foi possivel carregar as vagas. Verifique sua conexao.');
     } finally {
       setCarregando(false);
     }
@@ -75,17 +69,15 @@ export default function HomeScreen({ navigation }) {
 
   async function toggleFavorito(vaga) {
     const ehFav = favoritos.includes(vaga.id);
+
     if (ehFav) {
       await removerFavorito(vaga.id);
       setFavoritos((prev) => prev.filter((id) => id !== vaga.id));
-    } else {
-      await salvarFavorito(vaga);
-      setFavoritos((prev) => [...prev, vaga.id]);
+      return;
     }
-  }
 
-  function abrirVaga(vaga) {
-    navigation.navigate('DetalheVaga', { vaga, matchPct: vaga.matchPct });
+    await salvarFavorito(vaga);
+    setFavoritos((prev) => [...prev, vaga.id]);
   }
 
   function renderVaga({ item }) {
@@ -94,7 +86,7 @@ export default function HomeScreen({ navigation }) {
         vaga={item}
         match={item.matchPct}
         favorito={favoritos.includes(item.id)}
-        onPress={() => abrirVaga(item)}
+        onPress={() => navigation.navigate('DetalheVaga', { vaga: item, matchPct: item.matchPct })}
         onToggleFavorito={() => toggleFavorito(item)}
       />
     );
@@ -105,7 +97,7 @@ export default function HomeScreen({ navigation }) {
       <SafeAreaView style={styles.safe}>
         <View style={styles.centro}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.carregandoText}>Buscando vagas para você...</Text>
+          <Text style={styles.carregandoText}>Buscando vagas para voce...</Text>
         </View>
       </SafeAreaView>
     );
@@ -129,11 +121,10 @@ export default function HomeScreen({ navigation }) {
         ListHeaderComponent={
           <View style={styles.header}>
             <Text style={styles.ola}>
-              Olá, {perfil?.nome?.split(' ')[0] || 'Desenvolvedor'} 👋
+              Ola, {perfil?.nome?.split(' ')[0] || 'Desenvolvedor'}
             </Text>
-            <Text style={styles.subtitulo}>Vagas recomendadas para você hoje</Text>
+            <Text style={styles.subtitulo}>Vagas recomendadas para voce hoje</Text>
 
-            {/* Botão editar perfil */}
             <TouchableOpacity
               style={styles.btnEditarPerfil}
               onPress={() => navigation.navigate('CadastroPerfil', { perfil })}

@@ -1,5 +1,3 @@
-// src/components/VagaCard.js
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -11,7 +9,6 @@ export default function VagaCard({ vaga, match, favorito, onPress, onToggleFavor
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
-      {/* Cabeçalho: título + percentual */}
       <View style={styles.row}>
         <Text style={styles.titulo} numberOfLines={1}>{vaga.title}</Text>
         <Text style={[styles.pct, { color: match >= 80 ? colors.primary : match >= 55 ? colors.secondary : colors.textTertiary }]}>
@@ -19,12 +16,10 @@ export default function VagaCard({ vaga, match, favorito, onPress, onToggleFavor
         </Text>
       </View>
 
-      {/* Empresa e localização */}
-      <Text style={styles.sub}>
-        {vaga.company_name} · {vaga.candidate_required_location || 'Remoto'}
+      <Text style={styles.sub} numberOfLines={1}>
+        {vaga.company_name} - {vaga.candidate_required_location || 'Remoto'}
       </Text>
 
-      {/* Rodapé: badge + coração */}
       <View style={[styles.row, { marginTop: spacing.sm }]}>
         <View style={[styles.badge, { backgroundColor: badge.fundo }]}>
           <Text style={[styles.badgeText, { color: badge.cor }]}>{badge.label}</Text>

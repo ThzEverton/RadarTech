@@ -1,5 +1,3 @@
-// App.js
-
 import { registerRootComponent } from 'expo';
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
@@ -18,14 +16,12 @@ function App() {
   useEffect(() => {
     inicializar();
 
-    // Listener de notificações recebidas
     const subscription = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notificação recebida:', notification);
+      console.log('Notificacao recebida:', notification);
     });
 
-    // Listener de toque na notificação
     const responseSubscription = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log('Notificação tocada:', response);
+      console.log('Notificacao tocada:', response);
     });
 
     return () => {

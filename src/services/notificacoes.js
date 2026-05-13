@@ -1,9 +1,7 @@
-// src/services/notificacoes.js
-
+import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
-// Configura como as notificações são exibidas enquanto o app está aberto
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -12,14 +10,19 @@ Notifications.setNotificationHandler({
   }),
 });
 
-/**
- * Solicita permissão de notificações ao usuário.
- * @returns {Promise<boolean>} - true se autorizado
- */
 export async function solicitarPermissao() {
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'Radar de Vagas',
+      importance: Notifications.AndroidImportance.HIGH,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#1D9E75',
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    });
+  }
+
   if (!Device.isDevice) {
-    console.log('Notificações só funcionam em dispositivo físico.');
-    return false;
+    console.log('Rodando em emulador: notificacoes locais serao testadas sem push token.');
   }
 
   const { status: statusAtual } = await Notifications.getPermissionsAsync();
@@ -33,30 +36,21 @@ export async function solicitarPermissao() {
   return statusFinal === 'granted';
 }
 
-/**
- * Envia uma notificação local imediata sobre uma vaga com alto match.
- * @param {Object} vaga - objeto da vaga
- * @param {number} percentualMatch - percentual de match calculado
- */
 export async function notificarVagaMatch(vaga, percentualMatch) {
   const autorizado = await solicitarPermissao();
   if (!autorizado) return;
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: `Nova vaga com ${percentualMatch}% de match! 🎯`,
-      body: `${vaga.title} — ${vaga.company_name}`,
+      title: `Nova vaga com ${percentualMatch}% de match!`,
+      body: `${vaga.title} - ${vaga.company_name}`,
       data: { vagaId: vaga.id },
       sound: true,
     },
-    trigger: null, // imediata
+    trigger: null,
   });
 }
 
-/**
- * Agenda verificação periódica de vagas (background check simulado).
- * Em produção, isso seria feito via Background Fetch.
- */
 export async function agendarVerificacao() {
   await Notifications.cancelAllScheduledNotificationsAsync();
 }

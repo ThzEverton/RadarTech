@@ -1,5 +1,3 @@
-// src/screens/FavoritosScreen.js
-
 import React, { useState, useCallback } from 'react';
 import {
   View,
@@ -65,7 +63,7 @@ export default function FavoritosScreen({ navigation }) {
             />
             <Text style={styles.vazioTitulo}>Nenhum favorito ainda</Text>
             <Text style={styles.vazioDesc}>
-              Toque no ícone de coração em qualquer vaga para salvá-la aqui.
+              Toque no icone de coracao em qualquer vaga para salva-la aqui.
             </Text>
           </View>
         }

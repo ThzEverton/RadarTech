@@ -1,5 +1,3 @@
-// src/navigation/index.js
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,13 +10,11 @@ import HomeScreen from '../screens/HomeScreen';
 import BuscaScreen from '../screens/BuscaScreen';
 import FavoritosScreen from '../screens/FavoritosScreen';
 import DetalheVagaScreen from '../screens/DetalheVagaScreen';
-
 import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// ── Tab Navigator (telas principais) ─────────────────────────────────────────
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -77,7 +73,6 @@ function MainTabs() {
   );
 }
 
-// ── Stack Navigator raiz ──────────────────────────────────────────────────────
 export default function AppNavigator({ temPerfil }) {
   return (
     <NavigationContainer>
@@ -85,14 +80,9 @@ export default function AppNavigator({ temPerfil }) {
         initialRouteName={temPerfil ? 'MainTabs' : 'CadastroPerfil'}
         screenOptions={{ headerShown: false }}
       >
-        {/* Onboarding */}
         <Stack.Screen name="CadastroPerfil" component={CadastroPerfilScreen} />
         <Stack.Screen name="CadastroInteresses" component={CadastroInteressesScreen} />
-
-        {/* App principal */}
         <Stack.Screen name="MainTabs" component={MainTabs} />
-
-        {/* Tela de detalhe */}
         <Stack.Screen
           name="DetalheVaga"
           component={DetalheVagaScreen}

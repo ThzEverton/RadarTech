@@ -1,16 +1,7 @@
-// src/components/ChipSelector.js
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, radius, spacing } from '../theme';
 
-/**
- * Chips de seleção simples (single ou multi).
- * @param {Array}    opcoes    - array de strings
- * @param {string|Array} valor - valor(es) selecionado(s)
- * @param {Function} onChange  - (novoValor) => void
- * @param {boolean}  multi     - permite múltipla seleção
- */
 export default function ChipSelector({ opcoes, valor, onChange, multi = false }) {
   function isSelected(op) {
     if (multi) return Array.isArray(valor) && valor.includes(op);
@@ -20,14 +11,11 @@ export default function ChipSelector({ opcoes, valor, onChange, multi = false })
   function handlePress(op) {
     if (multi) {
       const arr = Array.isArray(valor) ? valor : [];
-      if (arr.includes(op)) {
-        onChange(arr.filter((v) => v !== op));
-      } else {
-        onChange([...arr, op]);
-      }
-    } else {
-      onChange(op);
+      onChange(arr.includes(op) ? arr.filter((v) => v !== op) : [...arr, op]);
+      return;
     }
+
+    onChange(valor === op ? '' : op);
   }
 
   return (

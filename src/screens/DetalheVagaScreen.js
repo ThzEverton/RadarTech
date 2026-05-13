@@ -1,5 +1,3 @@
-// src/screens/DetalheVagaScreen.js
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -24,7 +22,7 @@ function InfoRow({ chave, valor }) {
   return (
     <View style={styles.infoRow}>
       <Text style={styles.infoChave}>{chave}</Text>
-      <Text style={styles.infoValor}>{valor || '—'}</Text>
+      <Text style={styles.infoValor}>{valor || '-'}</Text>
     </View>
   );
 }
@@ -37,33 +35,38 @@ export default function DetalheVagaScreen({ route, navigation }) {
 
   useEffect(() => {
     ehFavorito(vaga.id).then(setFavorito);
-  }, []);
+  }, [vaga.id]);
 
   async function toggleFavorito() {
     if (favorito) {
       await removerFavorito(vaga.id);
       setFavorito(false);
-    } else {
-      await salvarFavorito({ ...vaga, matchPct });
-      setFavorito(true);
+      return;
     }
+
+    await salvarFavorito({ ...vaga, matchPct });
+    setFavorito(true);
   }
 
   async function candidatar() {
     const url = vaga.url;
+
     if (!url) {
-      Alert.alert('Erro', 'Link da vaga não disponível.');
+      Alert.alert('Erro', 'Link da vaga nao disponivel.');
       return;
     }
+
     const suporte = await Linking.canOpenURL(url);
     if (suporte) {
       await Linking.openURL(url);
-    } else {
-      Alert.alert('Erro', 'Não foi possível abrir o link da vaga.');
+      return;
     }
+
+    Alert.alert('Erro', 'Nao foi possivel abrir o link da vaga.');
   }
 
-  const descricao = stripHtml(vaga.description).slice(0, 300);
+  const descricao = stripHtml(vaga.description);
+  const descricaoCurta = descricao.length > 300 ? `${descricao.slice(0, 300)}...` : descricao;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -71,13 +74,11 @@ export default function DetalheVagaScreen({ route, navigation }) {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        {/* Botão voltar */}
         <TouchableOpacity style={styles.voltar} onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={20} color={colors.primary} />
           <Text style={styles.voltarText}>Voltar</Text>
         </TouchableOpacity>
 
-        {/* Cabeçalho da vaga */}
         <Text style={styles.titulo}>{vaga.title}</Text>
         <View style={[styles.badge, { backgroundColor: badge.fundo }]}>
           <Text style={[styles.badgeText, { color: badge.cor }]}>
@@ -85,16 +86,14 @@ export default function DetalheVagaScreen({ route, navigation }) {
           </Text>
         </View>
 
-        {/* Detalhes */}
         <View style={styles.card}>
           <InfoRow chave="Empresa" valor={vaga.company_name} />
           <InfoRow chave="Tipo" valor={vaga.job_type?.replace('_', ' ')} />
-          <InfoRow chave="Localização" valor={vaga.candidate_required_location || 'Remoto'} />
+          <InfoRow chave="Localizacao" valor={vaga.candidate_required_location || 'Remoto'} />
           <InfoRow chave="Categoria" valor={vaga.category} />
-          <InfoRow chave="Salário" valor={vaga.salary || 'Não informado'} />
+          <InfoRow chave="Salario" valor={vaga.salary || 'Nao informado'} />
         </View>
 
-        {/* Tags de tecnologia */}
         {vaga.tags?.length > 0 && (
           <>
             <Text style={styles.sectionLabel}>TECNOLOGIAS</Text>
@@ -108,13 +107,11 @@ export default function DetalheVagaScreen({ route, navigation }) {
           </>
         )}
 
-        {/* Descrição */}
         <Text style={styles.sectionLabel}>SOBRE A VAGA</Text>
         <View style={styles.descCard}>
-          <Text style={styles.descText}>{descricao}...</Text>
+          <Text style={styles.descText}>{descricaoCurta || 'Descricao nao informada.'}</Text>
         </View>
 
-        {/* Botões de ação */}
         <TouchableOpacity style={styles.btnCandidatar} onPress={candidatar} activeOpacity={0.85}>
           <MaterialCommunityIcons name="send-outline" size={18} color={colors.white} />
           <Text style={styles.btnCandidatarText}>Candidatar-se</Text>
@@ -170,7 +167,13 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   infoChave: { fontSize: 13, color: colors.textSecondary },
-  infoValor: { fontSize: 13, fontWeight: '600', color: colors.textPrimary, maxWidth: '60%', textAlign: 'right' },
+  infoValor: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    maxWidth: '60%',
+    textAlign: 'right',
+  },
   sectionLabel: {
     fontSize: 11,
     fontWeight: '700',
@@ -178,7 +181,12 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: spacing.sm,
   },
-  tagsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.lg },
+  tagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    marginBottom: spacing.lg,
+  },
   tag: {
     backgroundColor: colors.primaryLight,
     paddingHorizontal: spacing.sm,

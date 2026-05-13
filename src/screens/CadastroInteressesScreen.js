@@ -1,5 +1,3 @@
-// src/screens/CadastroInteressesScreen.js
-
 import React, { useState } from 'react';
 import {
   View,
@@ -8,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StarRating from '../components/StarRating';
@@ -15,20 +14,20 @@ import { salvarPerfil } from '../services/storage';
 import { solicitarPermissao } from '../services/notificacoes';
 import { colors, spacing, radius, typography } from '../theme';
 
-const STACKS = ['React Native', 'Python', 'Java', 'Node.js', 'Vue.js'];
+const STACKS = ['React Native', 'React', 'Python', 'Java', 'Node.js', 'Vue.js'];
+
+const INTERESSES_INICIAIS = STACKS.reduce((acc, stack) => {
+  acc[stack] = 0;
+  return acc;
+}, {});
 
 export default function CadastroInteressesScreen({ navigation, route }) {
   const { dadosParciais, perfilExistente } = route.params;
 
-  const [interesses, setInteresses] = useState(
-    perfilExistente?.interesses || {
-      'React Native': 0,
-      Python: 0,
-      Java: 0,
-      'Node.js': 0,
-      'Vue.js': 0,
-    }
-  );
+  const [interesses, setInteresses] = useState({
+    ...INTERESSES_INICIAIS,
+    ...(perfilExistente?.interesses || {}),
+  });
   const [salvando, setSalvando] = useState(false);
 
   function setEstrela(stack, valor) {
@@ -36,17 +35,24 @@ export default function CadastroInteressesScreen({ navigation, route }) {
   }
 
   async function salvar() {
+    const temInteresse = Object.values(interesses).some((valor) => valor > 0);
+    if (!temInteresse) {
+      Alert.alert('Atencao', 'Avalie ao menos uma tecnologia antes de salvar.');
+      return;
+    }
+
     setSalvando(true);
+
     try {
       const perfil = { ...dadosParciais, interesses };
       await salvarPerfil(perfil);
-      await solicitarPermissao(); // pede permissão de notificação
+      await solicitarPermissao();
       navigation.reset({
         index: 0,
         routes: [{ name: 'MainTabs', params: { perfil } }],
       });
     } catch (e) {
-      console.error('Erro ao salvar perfil:', e);
+      Alert.alert('Erro', 'Nao foi possivel salvar seu perfil. Tente novamente.');
     } finally {
       setSalvando(false);
     }
@@ -58,7 +64,6 @@ export default function CadastroInteressesScreen({ navigation, route }) {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        {/* Cabeçalho */}
         <View style={styles.header}>
           <Text style={styles.titulo}>Seus interesses</Text>
           <Text style={styles.subtitulo}>Avalie cada tecnologia de 1 a 5 estrelas</Text>
@@ -68,7 +73,6 @@ export default function CadastroInteressesScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Lista de stacks */}
         <View style={styles.lista}>
           {STACKS.map((stack, idx) => (
             <View
@@ -85,10 +89,9 @@ export default function CadastroInteressesScreen({ navigation, route }) {
         </View>
 
         <Text style={styles.dica}>
-          💡 As avaliações são usadas para calcular o percentual de match das vagas
+          As avaliacoes sao usadas para calcular o percentual de match das vagas.
         </Text>
 
-        {/* Botão */}
         <TouchableOpacity
           style={[styles.btnPrimario, salvando && { opacity: 0.7 }]}
           onPress={salvar}

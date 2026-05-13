@@ -1,5 +1,3 @@
-// src/screens/CadastroPerfilScreen.js
-
 import React, { useState } from 'react';
 import {
   View,
@@ -16,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ChipSelector from '../components/ChipSelector';
 import { colors, spacing, radius, typography } from '../theme';
 
-const NIVEIS = ['Junior', 'Pleno', 'Sênior'];
+const NIVEIS = ['Junior', 'Pleno', 'Senior'];
 const TIPOS = ['Remoto', 'Presencial'];
 
 export default function CadastroPerfilScreen({ navigation, route }) {
@@ -29,24 +27,27 @@ export default function CadastroPerfilScreen({ navigation, route }) {
 
   function avancar() {
     if (!nome.trim()) {
-      Alert.alert('Atenção', 'Por favor, informe seu nome.');
+      Alert.alert('Atencao', 'Por favor, informe seu nome.');
       return;
     }
+
     if (!email.trim() || !email.includes('@')) {
-      Alert.alert('Atenção', 'Por favor, informe um e-mail válido.');
+      Alert.alert('Atencao', 'Por favor, informe um e-mail valido.');
       return;
     }
+
     if (!nivel) {
-      Alert.alert('Atenção', 'Selecione seu nível profissional.');
+      Alert.alert('Atencao', 'Selecione seu nivel profissional.');
       return;
     }
+
     if (!tipo) {
-      Alert.alert('Atenção', 'Selecione o tipo de trabalho preferido.');
+      Alert.alert('Atencao', 'Selecione o tipo de trabalho preferido.');
       return;
     }
 
     navigation.navigate('CadastroInteresses', {
-      dadosParciais: { nome, email, nivel, tipo },
+      dadosParciais: { nome: nome.trim(), email: email.trim(), nivel, tipo },
       perfilExistente,
     });
   }
@@ -64,24 +65,19 @@ export default function CadastroPerfilScreen({ navigation, route }) {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Cabeçalho */}
           <View style={styles.header}>
             <Text style={styles.titulo}>
               {isEdicao ? 'Editar perfil' : 'Criar perfil'}
             </Text>
             <Text style={styles.subtitulo}>
-              {isEdicao
-                ? 'Atualize suas informações'
-                : 'Configure seus interesses uma vez'}
+              {isEdicao ? 'Atualize suas informacoes' : 'Configure seus interesses uma vez'}
             </Text>
-            {/* Indicador de progresso */}
             <View style={styles.dots}>
               <View style={[styles.dot, styles.dotAtivo]} />
               <View style={styles.dot} />
             </View>
           </View>
 
-          {/* Nome */}
           <Text style={styles.label}>Nome completo</Text>
           <TextInput
             style={styles.input}
@@ -92,7 +88,6 @@ export default function CadastroPerfilScreen({ navigation, route }) {
             autoCapitalize="words"
           />
 
-          {/* Email */}
           <Text style={styles.label}>E-mail</Text>
           <TextInput
             style={styles.input}
@@ -104,17 +99,14 @@ export default function CadastroPerfilScreen({ navigation, route }) {
             autoCapitalize="none"
           />
 
-          {/* Nível */}
-          <Text style={styles.label}>Nível profissional</Text>
+          <Text style={styles.label}>Nivel profissional</Text>
           <ChipSelector opcoes={NIVEIS} valor={nivel} onChange={setNivel} />
 
-          {/* Tipo de trabalho */}
           <Text style={styles.label}>Tipo de trabalho preferido</Text>
           <ChipSelector opcoes={TIPOS} valor={tipo} onChange={setTipo} />
 
-          {/* Botão */}
           <TouchableOpacity style={styles.btnPrimario} onPress={avancar} activeOpacity={0.85}>
-            <Text style={styles.btnPrimarioText}>Próximo →</Text>
+            <Text style={styles.btnPrimarioText}>Proximo</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

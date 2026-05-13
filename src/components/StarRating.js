@@ -1,16 +1,8 @@
-// src/components/StarRating.js
-
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../theme';
 
-/**
- * Avaliação de 1 a 5 estrelas.
- * @param {number}   valor    - 0-5
- * @param {Function} onChange - (novoValor) => void
- * @param {number}   tamanho  - tamanho do ícone (padrão 28)
- */
 export default function StarRating({ valor = 0, onChange, tamanho = 28 }) {
   return (
     <View style={styles.row}>

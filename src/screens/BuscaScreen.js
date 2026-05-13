@@ -1,5 +1,3 @@
-// src/screens/BuscaScreen.js
-
 import React, { useState } from 'react';
 import {
   View,
@@ -14,13 +12,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ChipSelector from '../components/ChipSelector';
 import VagaCard from '../components/VagaCard';
-import { buscarVagas } from '../services/remotiveApi';
+import { buscarVagas } from '../services/vagasApi';
 import { carregarPerfil, carregarFavoritos, salvarFavorito, removerFavorito } from '../services/storage';
 import { calcularMatch } from '../hooks/useMatch';
 import { colors, spacing, radius, typography } from '../theme';
 
 const STACKS = ['React', 'React Native', 'Python', 'Java', 'Node.js', 'Vue.js'];
-const NIVEIS = ['Junior', 'Pleno', 'Sênior'];
+const NIVEIS = ['Junior', 'Pleno', 'Senior'];
 const TIPOS = ['Remoto', 'Presencial'];
 
 export default function BuscaScreen({ navigation }) {
@@ -34,7 +32,7 @@ export default function BuscaScreen({ navigation }) {
 
   async function buscar() {
     if (stackSel.length === 0 && !nivelSel && !tipoSel) {
-      Alert.alert('Atenção', 'Selecione ao menos um filtro para buscar.');
+      Alert.alert('Atencao', 'Selecione ao menos um filtro para buscar.');
       return;
     }
 
@@ -61,7 +59,7 @@ export default function BuscaScreen({ navigation }) {
 
       setVagas(vagasComMatch);
     } catch (e) {
-      Alert.alert('Erro', 'Não foi possível buscar as vagas. Tente novamente.');
+      Alert.alert('Erro', 'Nao foi possivel buscar as vagas. Tente novamente.');
     } finally {
       setCarregando(false);
     }
@@ -69,13 +67,15 @@ export default function BuscaScreen({ navigation }) {
 
   async function toggleFavorito(vaga) {
     const ehFav = favoritos.includes(vaga.id);
+
     if (ehFav) {
       await removerFavorito(vaga.id);
       setFavoritos((prev) => prev.filter((id) => id !== vaga.id));
-    } else {
-      await salvarFavorito(vaga);
-      setFavoritos((prev) => [...prev, vaga.id]);
+      return;
     }
+
+    await salvarFavorito(vaga);
+    setFavoritos((prev) => [...prev, vaga.id]);
   }
 
   function renderVaga({ item }) {
@@ -104,14 +104,9 @@ export default function BuscaScreen({ navigation }) {
             <Text style={styles.titulo}>Buscar vagas</Text>
 
             <Text style={styles.label}>Stack</Text>
-            <ChipSelector
-              opcoes={STACKS}
-              valor={stackSel}
-              onChange={setStackSel}
-              multi
-            />
+            <ChipSelector opcoes={STACKS} valor={stackSel} onChange={setStackSel} multi />
 
-            <Text style={styles.label}>Nível</Text>
+            <Text style={styles.label}>Nivel</Text>
             <ChipSelector opcoes={NIVEIS} valor={nivelSel} onChange={setNivelSel} />
 
             <Text style={styles.label}>Tipo de trabalho</Text>

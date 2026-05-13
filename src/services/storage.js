@@ -1,13 +1,9 @@
-// src/services/storage.js
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CHAVES = {
   PERFIL: '@radar_vagas:perfil',
   FAVORITOS: '@radar_vagas:favoritos',
 };
-
-// ─── PERFIL ───────────────────────────────────────────────────────────────────
 
 export async function salvarPerfil(perfil) {
   await AsyncStorage.setItem(CHAVES.PERFIL, JSON.stringify(perfil));
@@ -22,8 +18,6 @@ export async function limparPerfil() {
   await AsyncStorage.removeItem(CHAVES.PERFIL);
 }
 
-// ─── FAVORITOS ────────────────────────────────────────────────────────────────
-
 export async function carregarFavoritos() {
   const raw = await AsyncStorage.getItem(CHAVES.FAVORITOS);
   return raw ? JSON.parse(raw) : [];
@@ -32,6 +26,7 @@ export async function carregarFavoritos() {
 export async function salvarFavorito(vaga) {
   const favoritos = await carregarFavoritos();
   const jaExiste = favoritos.some((f) => f.id === vaga.id);
+
   if (!jaExiste) {
     favoritos.push(vaga);
     await AsyncStorage.setItem(CHAVES.FAVORITOS, JSON.stringify(favoritos));
