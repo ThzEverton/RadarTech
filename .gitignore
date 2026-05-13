@@ -2,6 +2,7 @@ node_modules/
 .expo/
 .env
 .env.local
+expo-start.log
 dist/
 build/
 .DS_Store
