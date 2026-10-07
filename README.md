@@ -1,74 +1,54 @@
-# Radar de Vagas Tech
+# RadarTech — Radar de Vagas Tech
 
-Aplicativo mobile feito com React Native e Expo para centralizar vagas brasileiras de tecnologia da API BR Vagas, ranquear oportunidades por match com o perfil do usuario e salvar favoritos localmente.
+Aplicativo mobile desenvolvido com **React Native + Expo** para centralizar vagas brasileiras de tecnologia e priorizar oportunidades de acordo com o perfil e os interesses do usuário.
 
-## Projeto
+## Principais funcionalidades
 
-- Disciplina: Desenvolvimento Mobile
-- Integrantes: Everton Thomaz e Jhennifer Lincoln
-- Professor: Dione Ferrari
-
-## Funcionalidades
-
-- Cadastro de perfil com nome, e-mail, nivel profissional e tipo de trabalho preferido.
-- Avaliacao de interesse por stack tecnologica com estrelas.
-- Home com vagas recomendadas e ordenadas por percentual de match.
-- Busca manual por stack, nivel e tipo de trabalho.
-- Tela de detalhe com informacoes da vaga e botao de candidatura.
+- Cadastro de perfil profissional.
+- Preferências de stack por nível de interesse.
+- Ranking de vagas por percentual de match.
+- Busca por stack, nível e modalidade de trabalho.
+- Tela de detalhes com acesso à candidatura.
 - Favoritos persistidos com AsyncStorage.
-- Notificacao local quando uma vaga com match acima de 80% e encontrada.
+- Notificação local para oportunidades com match acima de 80%.
 
-## Tecnologias
+## Como o match funciona
+
+O app combina as preferências cadastradas pelo usuário com os dados das vagas e utiliza esse resultado para ordenar as oportunidades mais relevantes.
+
+## Stack
 
 - Expo SDK 51
 - React Native 0.74
-- React Navigation 6
+- React Navigation
 - Axios
 - AsyncStorage
 - Expo Notifications
 - React Native Paper
 
-## Como Rodar
+## Estrutura
+
+```text
+src/
+├── components/
+├── hooks/
+├── navigation/
+├── screens/
+├── services/
+└── theme/
+```
+
+A separação entre telas, serviços, navegação e hooks mantém a interface desacoplada da lógica de integração e do cálculo de compatibilidade.
+
+## Executando
 
 ```bash
 npm install
 npx expo start
 ```
 
-No Windows, caso o PowerShell bloqueie `npm.ps1`, use:
+## Contexto acadêmico
 
-```bash
-npm.cmd install
-npx.cmd expo start
-```
-
-## Estrutura
-
-```text
-App.js
-app.json
-babel.config.js
-package.json
-src/
-  components/
-    ChipSelector.js
-    StarRating.js
-    VagaCard.js
-  hooks/
-    useMatch.js
-  navigation/
-    index.js
-  screens/
-    BuscaScreen.js
-    CadastroInteressesScreen.js
-    CadastroPerfilScreen.js
-    DetalheVagaScreen.js
-    FavoritosScreen.js
-    HomeScreen.js
-  services/
-    notificacoes.js
-    vagasApi.js
-    storage.js
-  theme/
-    index.js
-```
+- Disciplina: Desenvolvimento Mobile
+- Integrantes: Everton Thomaz e Jhennifer Lincoln
+- Professor: Dione Ferrari
