@@ -29,5 +29,6 @@
   "devDependencies": {
     "@babel/core": "^7.24.0"
   },
-  "private": true
+  "private": true,
+  "description": "Aplicativo mobile de vagas tech com ranking por compatibilidade de perfil."
 }
